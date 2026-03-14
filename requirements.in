@@ -1,0 +1,6 @@
+# Scientific Computation
+numpy>=2.3.3
+pandas>=2.3.3
+
+# Dashboard
+streamlit>=1.55.0
