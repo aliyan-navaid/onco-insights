@@ -102,3 +102,20 @@ scaler = StandardScaler()
 # Scalar discards column names
 df[topk.index] = scaler.fit_transform(df[topk.index])
 st.dataframe(df[topk.index])
+
+##############################
+#   Train/Test Split
+##############################
+st.title("Train/Test Split")
+
+sizeTrain = st.slider("Select Training Size", min_value=0.5, max_value=0.90, step=0.01)
+sizeTest = 1.0 - sizeTrain
+
+x_train, x_test, y_train, y_test = train_test_split(
+    df[topk.index],
+    df["Level"],
+    train_size=sizeTrain,
+    test_size=sizeTest
+)
+
+st.divider()
