@@ -41,6 +41,63 @@ def progressBar(delta: float):
         progress.text(f"{i+1}%")
         time.sleep(delta)
 
+def pltHistogram(ax, df, feature):
+    sns.histplot(
+        data=df,
+        x=feature,
+        bins=df[feature].max() - df[feature].min(),
+        kde=True,
+        ax=ax
+    )
+    ax.set_title(
+        f"{feature} Distribution",
+        fontsize=12,
+        fontweight="bold"
+    )
+    ax.axvline(
+        df[feature].mean(),
+        color='red',
+        linestyle='--',
+        label=f"Mean: {df[feature].mean():.1f}"
+    )
+
+    ax.legend()
+
+def pltCountplot(ax, df, feature, xticks=None):
+    sns.countplot(
+        data=df,
+        x="Gender",
+        ax=ax
+    )
+    ax.set_title(
+        f"{feature} Distribution",
+        fontsize=12,
+        fontweight="bold"
+    )
+    if xticks:
+        ax.set_xticks([i for i in range(len(xticks))], xticks)
+
+@st.cache_data
+def pltfeaturesDistribution():
+    numeric_cols = [
+        col for col in 
+        df.select_dtypes(include="number").columns
+        if col != "Gender"
+    ]
+    
+    fig, axes = plt.subplots(5, 5, figsize=(30,15))
+    axes = axes.flatten()
+    
+    for i, feature in enumerate(numeric_cols):
+        pltHistogram(axes[i], df, feature)
+
+    pltCountplot(axes[22], df, "Gender", ["Male", "Female"])
+    
+    pltCountplot(axes[23], df, "Level")
+    
+    st.header("Feature Distributions")
+    plt.tight_layout()
+    st.pyplot(fig)
 
 ##############################
 #   Data Inspection
@@ -72,3 +129,9 @@ if (st.button("Pre-Process")):
 
 
 st.divider()
+
+##############################
+#   EDA
+##############################
+st.title("Eploratory Data Analysis")
+pltfeaturesDistribution()
