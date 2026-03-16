@@ -128,7 +128,12 @@ st.title("Training Model")
 k = st.slider("Select K", min_value=1, max_value=10)
 knn = KNeighborsClassifier(n_neighbors=k)
 
-knn.fit(x_train, y_train)
+if (st.button("Train")):
+    knn.fit(x_train, y_train)
+    jb.dump(knn, "models/model.joblib")
+    st.write("Model has been trained and saved")
+
+knn = jb.load('models/model.joblib')
 y_pred = knn.predict(x_test)
 
 st.divider()
