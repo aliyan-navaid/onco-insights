@@ -119,3 +119,16 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 
 st.divider()
+
+##############################
+#   Training Model
+##############################
+st.title("Training Model")
+
+k = st.slider("Select K", min_value=1, max_value=10)
+knn = KNeighborsClassifier(n_neighbors=k)
+
+knn.fit(x_train, y_train)
+y_pred = knn.predict(x_test)
+
+st.divider()
