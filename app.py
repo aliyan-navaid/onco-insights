@@ -12,6 +12,7 @@ from sklearn.metrics import confusion_matrix, classification_report, accuracy_sc
 
 from utils import grapher
 from utils import data
+from utils import features
 
 
 def progressBar(delta: float):
@@ -64,3 +65,29 @@ st.header("Features Box Plot")
 grapher.pltboxDistribution(df)
 
 st.divider()
+
+##############################
+#   Feature Selection
+##############################
+st.title("Feature Selection")
+
+st.header("Correlation of Features")
+method = (
+    st.select_slider(
+        "Select Correlation Method",
+        options= ["pearson", "kendall", "spearman"])
+)
+df_encoded = data.encode(df, {"Low":0, "Medium":1, "High":2})
+correlation = features.getCorrelation(df_encoded, method)
+targetCorrelation = (
+    correlation["Level"]
+    .sort_values(ascending=False)
+    .drop(index="Level")
+    if correlation is not None else pd.Series()
+    # Case: getCorr() -> None
+)
+st.dataframe(targetCorrelation)
+
+thrsh = st.slider("Select Threshold for Features", min_value=25, max_value=100)
+topk = targetCorrelation[ targetCorrelation >= thrsh ]
+st.dataframe(topk)

@@ -23,3 +23,10 @@ def preprocess(df: pd.DataFrame):
     df.drop_duplicates(inplace=True)
     df.fillna("Unnown", inplace=True)
     return info
+
+def encode(df: pd.DataFrame, encoding):
+    df_encoded = (
+        df.copy()
+        .replace(encoding) # inplace=True in chain-> returns None
+    )
+    return df_encoded
