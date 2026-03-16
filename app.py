@@ -57,3 +57,18 @@ with left:
     st.dataframe(df.describe())
 with right:
     st.dataframe(summary(df))
+
+##############################
+#   PreProcess
+##############################
+st.divider()
+
+if (st.button("Pre-Process")):
+    plcText = st.empty()
+    plcText.text(f"Removing Duplicates and Null-Rows")
+    progressBar(0.05)
+    dup, null = preprocess(df)
+    plcText.text(f"Removed {dup} Duplicate Rows and {null} Null Rows")
+
+
+st.divider()
