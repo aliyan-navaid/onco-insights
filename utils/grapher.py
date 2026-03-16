@@ -2,6 +2,14 @@ import seaborn as sns
 import streamlit as st
 import matplotlib.pyplot as plt
 
+def pltHeatmap(df, cm):
+    fig, ax = plt.subplots(1,1, figsize=(10,6))
+    sns.heatmap(data=cm)
+    plt.title("Confusion Matirx", fontsize=15, fontweight="bold")
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    st.pyplot(fig)
+
 def pltHistogram(ax, df, feature):
     sns.histplot(
         data=df,

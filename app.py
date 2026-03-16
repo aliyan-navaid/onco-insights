@@ -132,3 +132,14 @@ knn.fit(x_train, y_train)
 y_pred = knn.predict(x_test)
 
 st.divider()
+
+##############################
+#   Evaluating Model
+##############################
+st.title("Evaluating Model")
+
+cm = confusion_matrix(y_test, y_pred)
+grapher.pltHeatmap(df, cm)
+
+classes = classification_report(y_test, y_pred, output_dict=True)
+st.dataframe( pd.DataFrame(classes).transpose())
