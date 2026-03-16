@@ -91,3 +91,14 @@ st.dataframe(targetCorrelation)
 thrsh = st.slider("Select Threshold for Features", min_value=25, max_value=100)
 topk = targetCorrelation[ targetCorrelation >= thrsh ]
 st.dataframe(topk)
+
+st.divider()
+
+##############################
+#   Feature Scaling
+##############################
+st.title("Feature Scaling")
+scaler = StandardScaler()
+# Scalar discards column names
+df[topk.index] = scaler.fit_transform(df[topk.index])
+st.dataframe(df[topk.index])
