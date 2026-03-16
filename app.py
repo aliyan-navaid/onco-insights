@@ -77,6 +77,21 @@ def pltCountplot(ax, df, feature, xticks=None):
     if xticks:
         ax.set_xticks([i for i in range(len(xticks))], xticks)
 
+def pltBox(ax, df, feature):
+    sns.boxplot(
+        data=df,
+        x=feature,
+        ax=ax
+    )
+    ax.set_title(
+        f"{feature} Distribution",
+        fontsize=12,
+        fontweight="bold"
+    )
+    ax.set_xlabel(
+        f"{"Age" if feature=="Age" else "Rating"}"
+    )
+
 @st.cache_data
 def pltfeaturesDistribution():
     numeric_cols = [
@@ -95,7 +110,17 @@ def pltfeaturesDistribution():
     
     pltCountplot(axes[23], df, "Level")
     
-    st.header("Feature Distributions")
+    plt.tight_layout()
+    st.pyplot(fig)
+
+@st.cache_data
+def pltboxDistribution():
+    fig, axes = plt.subplots(5,5, figsize=(20,10))
+    axes = axes.flatten()
+
+    for i, feature in enumerate(df.columns):
+        pltBox(axes[i], df, feature)
+
     plt.tight_layout()
     st.pyplot(fig)
 
@@ -134,4 +159,9 @@ st.divider()
 #   EDA
 ##############################
 st.title("Eploratory Data Analysis")
+
+st.header("Featues Distribution")
 pltfeaturesDistribution()
+
+st.header("Features Box Plot")
+pltboxDistribution()
