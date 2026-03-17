@@ -1,3 +1,4 @@
+from pathlib import Path
 import streamlit as st
 import time
 import pandas as pd
@@ -14,6 +15,13 @@ from utils import grapher
 from utils import data
 from utils import features
 
+if "firstTrain" not in st.session_state:
+    st.session_state.firstTrain = True
+else:
+    st.session_state.firstTrain = False
+
+if "reTrain" not in st.session_state:
+    st.session_state.reTrain = False
 
 def progressBar(delta: float):
     progress = st.empty()
@@ -23,6 +31,8 @@ def progressBar(delta: float):
         progress.text(f"{i+1}%")
         time.sleep(delta)
 
+def setRetrain():
+    st.session_state.reTrain = True
 
 ##############################
 #   Data Inspection
@@ -88,7 +98,7 @@ targetCorrelation = (
 )
 st.dataframe(targetCorrelation)
 
-thrsh = st.slider("Select Threshold for Features", min_value=25, max_value=100)
+thrsh = st.slider("Select Threshold for Features", min_value=targetCorrelation.min(), max_value=targetCorrelation.max(), on_change=setRetrain)
 topk = targetCorrelation[ targetCorrelation >= thrsh ]
 st.dataframe(topk)
 
@@ -125,15 +135,25 @@ st.divider()
 ##############################
 st.title("Training Model")
 
-k = st.slider("Select K", min_value=1, max_value=10)
-knn = KNeighborsClassifier(n_neighbors=k)
+k = st.slider("Select K", min_value=1, max_value=10, on_change=setRetrain)
 
-if (st.button("Train")):
+path = Path("models/model.joblib")
+
+def train():
+    knn = KNeighborsClassifier(n_neighbors=k)
     knn.fit(x_train, y_train)
-    jb.dump(knn, "models/model.joblib")
+    jb.dump(knn, path)
     st.write("Model has been trained and saved")
 
-knn = jb.load('models/model.joblib')
+if (st.session_state.firstTrain):
+    st.session_state.firstTrain = False
+    train()
+
+if (st.session_state.reTrain):
+    st.session_state.reTrain = False
+    train()
+
+knn = jb.load(path)
 y_pred = knn.predict(x_test)
 
 st.divider()
